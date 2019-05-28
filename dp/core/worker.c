@@ -69,6 +69,8 @@ extern int swapcontext_very_fast(ucontext_t *ouctx, ucontext_t *uctx);
 extern void dune_apic_eoi();
 extern int dune_register_intr_handler(int vector, dune_intr_cb cb);
 
+extern void call_extension();
+
 struct response {
         uint64_t runNs;
         uint64_t genNs;
@@ -117,6 +119,7 @@ static void generic_work(uint32_t msw, uint32_t lsw, uint32_t msw_id,
                          uint32_t lsw_id)
 {
         asm volatile ("sti":::);
+	call_extension();
 
         struct ip_tuple * id = (struct ip_tuple *) ((uint64_t) msw_id << 32 | lsw_id);
         void * data = (void *)((uint64_t) msw << 32 | lsw);
